@@ -34,3 +34,15 @@ class Decoder(nn.Module):
         x = self.decoder2(x, skip2)
         x = self.decoder3(x, skip1)
         return x
+class UNet(nn.Module):
+    def __init__(self, in_channels=3, out_channels=1, base_channels=32, channels=(32, 64, 128, 256)):
+        super().__init__()
+        self.encoder = Encoder(in_channels, base_channels, channels)
+        self.decoder = Decoder(base_channels, channels)
+        self.final_conv = nn.Conv2d(channels[0], out_channels, kernel_size=1)
+
+    def forward(self, x):
+        x4, skips = self.encoder(x)
+        x = self.decoder(x4, skips)
+        x = self.final_conv(x)
+        return x
