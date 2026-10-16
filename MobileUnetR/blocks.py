@@ -9,7 +9,6 @@ class MobileViTBlock(nn.Module):
         super().__init__()
         self.patch_size = patch_size
 
-        # Représentation locale
         self.local_rep = nn.Sequential(
             nn.Conv2d(channels, channels, kernel_size=3, padding=1,
                       groups=channels, bias=False),
@@ -31,7 +30,6 @@ class MobileViTBlock(nn.Module):
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=depth)
         self.transformer_norm = nn.LayerNorm(transformer_dim)
 
-        # Projection retour + fusion
         self.proj_out = nn.Conv2d(transformer_dim, channels, kernel_size=1, bias=False)
         self.fusion = nn.Sequential(
             nn.Conv2d(channels * 2, channels, kernel_size=3, padding=1, bias=False),
@@ -42,7 +40,6 @@ class MobileViTBlock(nn.Module):
     def _unfold(self, x):
         B, d, H, W = x.shape
         p = self.patch_size
-        # x: (B, d, H, W) -> patches de taille p x p
         x = x.reshape(B, d, H // p, p, W // p, p)
         x = x.permute(0, 3, 5, 1, 2, 4)  # B, p, p, d, H//p, W//p
         num_patches = (H // p) * (W // p)
@@ -63,7 +60,6 @@ class MobileViTBlock(nn.Module):
         B, C, H, W = x.shape
         p = self.patch_size
 
-        # padding si H/W non divisibles par patch_size
         pad_h = (p - H % p) % p
         pad_w = (p - W % p) % p
         x_in = x

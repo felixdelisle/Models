@@ -1,0 +1,20 @@
+# Datasets and generated artifacts
+datasets/
+**/checkpoints/
+
+# Papers and figures
+*.pdf
+*.PDF
+*.png
+*.PNG
+
+# Python environments and generated files
+.venv/
+venv/
+env/
+ml_models/
+__pycache__/
+*.py[cod]
+
+# Operating system files
+.DS_Store
