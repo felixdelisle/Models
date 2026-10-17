@@ -1,7 +1,7 @@
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F
-from .blocks import EncoderBlock, DecoderBlock
+from blocks import EncoderBlock, DecoderBlock
 
 class Encoder(nn.Module):
     def __init__(self, in_channels=3, base_channels=32, channels=(32, 64, 128, 256)):
@@ -24,9 +24,9 @@ class Decoder(nn.Module):
     def __init__(self, base_channels=32, channels=(32, 64, 128, 256)):
         super().__init__()
         c1, c2, c3, c4 = channels
-        self.decoder1 = DecoderBlock(c4, c3)
-        self.decoder2 = DecoderBlock(c3, c2)
-        self.decoder3 = DecoderBlock(c2, c1)
+        self.decoder1 = DecoderBlock(c4, c3, c3)
+        self.decoder2 = DecoderBlock(c3, c2, c2)
+        self.decoder3 = DecoderBlock(c2, c1, c1)
 
     def forward(self, x, skips):
         skip1, skip2, skip3 = skips
